@@ -1,0 +1,60 @@
+import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        List<Integer> weights = new ArrayList<>();
+        while (true) {
+            System.out.println("Enter apple weight in gram (-1 to stop ) : ");
+            int wt = sc.nextInt();
+            if (wt == -1) break;
+            weights.add(wt);
+        }
+
+        Collections.sort(weights, Collections.reverseOrder());
+
+        String[] person = {"Ram", "Sham", "Rahim"};
+        double[] share = {0.5, 0.3, 0.2};
+        int[] totalWeights = {0, 0, 0};
+        List<List<Integer>> apples = new ArrayList<>();
+
+        for (int i = 0; i < person.length; i++) {
+            apples.add(new ArrayList<>());
+        }
+
+        int totalWeight = weights.stream().mapToInt(Integer::intValue).sum();
+
+        for (int w : weights) {
+            double maxDiff = Double.MAX_VALUE;
+            int assignToPerson = -1;
+
+            for (int i = 0; i < person.length; i++) {
+                double currWeight = totalWeights[i] + w;
+                double currRatio = currWeight / (double) totalWeight;
+                double currDiff = Math.abs(currRatio - share[i]);
+
+                if (currDiff < maxDiff) {
+                    maxDiff = currDiff;
+                    assignToPerson = i;
+                }
+            }
+
+            apples.get(assignToPerson).add(w);
+            totalWeights[assignToPerson] += w;
+        }
+
+        System.out.println("Distribution Result:");
+        for (int i = 0; i < person.length; i++) {
+            System.out.print(person[i] + " : ");
+            for (int weight : apples.get(i)) {
+                System.out.print(weight + " ");
+            }
+            System.out.println();
+        }
+
+        sc.close();
+    }
+}
